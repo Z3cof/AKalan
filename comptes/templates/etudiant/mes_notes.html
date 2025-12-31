@@ -1,0 +1,93 @@
+{% extends 'etudiant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Mes Notes{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="mb-4 md:mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Mes Notes</h2>
+        <p class="text-sm md:text-base text-gray-400">Vos notes et moyennes</p>
+    </div>
+
+    {% if moyenne_generale %}
+    <div class="glass-card rounded-xl p-4 md:p-6 mb-4 md:mb-6 border-l-4 border-yellow-500">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm mb-1">Moyenne générale</p>
+                <p class="text-3xl md:text-4xl font-bold text-white">{{ moyenne_generale }}/20</p>
+            </div>
+            <div class="w-12 h-12 md:w-16 md:h-16 bg-yellow-600/20 rounded-xl flex items-center justify-center border border-yellow-500/30 flex-shrink-0">
+                <svg class="w-6 h-6 md:w-8 md:h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if notes_par_devoir %}
+    <div class="space-y-4 md:space-y-6">
+        {% for devoir_nom, notes_devoir in notes_par_devoir.items %}
+        <div class="glass-card rounded-xl p-4 md:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-4 gap-2">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-white break-words">{{ devoir_nom }}</h3>
+                    {% for note in notes_devoir|slice:":1" %}
+                    <p class="text-xs md:text-sm text-gray-400 mt-1 break-words">Cours: {{ note.devoir.cours.titre }}</p>
+                    {% endfor %}
+                </div>
+                {% for nom, moyenne in moyennes_par_devoir.items %}
+                    {% if nom == devoir_nom %}
+                    <span class="px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg text-sm font-medium">
+                        Moyenne: {{ moyenne }}/20
+                    </span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                {% for note in notes_devoir %}
+                <div class="bg-gray-800/50 rounded-lg p-3 md:p-4 border-l-4 {% if note.note >= 16 %}border-green-500{% elif note.note >= 12 %}border-yellow-500{% else %}border-red-500{% endif %}">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xl md:text-2xl font-bold text-white">{{ note.note }}/20</span>
+                    </div>
+                    {% if note.commentaire %}
+                    <p class="text-xs md:text-sm text-gray-400 mb-2 line-clamp-2">{{ note.commentaire|truncatewords:10 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500">{{ note.date_attribution|date:"d/m/Y" }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif notes %}
+    <div class="glass-card rounded-xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for note in notes %}
+            <div class="bg-gray-800/50 rounded-lg p-4 border-l-4 {% if note.note >= 16 %}border-green-500{% elif note.note >= 12 %}border-yellow-500{% else %}border-red-500{% endif %}">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl font-bold text-white">{{ note.note }}/20</span>
+                    <span class="text-xs text-gray-400">{{ note.devoir.titre|truncatewords:2 }}</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">Cours: {{ note.devoir.cours.titre|truncatewords:2 }}</p>
+                {% if note.commentaire %}
+                <p class="text-sm text-gray-400 mb-2">{{ note.commentaire|truncatewords:10 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500">{{ note.date_attribution|date:"d/m/Y" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="glass-card rounded-xl p-12 text-center">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+        </svg>
+        <h3 class="text-xl font-bold text-white mb-2">Aucune note</h3>
+        <p class="text-gray-400">Vous n'avez pas encore de notes attribuées.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

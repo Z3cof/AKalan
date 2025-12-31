@@ -1,0 +1,165 @@
+{% extends 'enseignant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Détails du Cours - {{ cours.titre }}{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <!-- En-tête avec bouton retour -->
+    <div class="mb-6">
+        <a href="{% url 'enseignants:mes_cours' %}" class="inline-flex items-center text-green-400 hover:text-green-300 mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Retour aux cours
+        </a>
+    </div>
+
+    <!-- Informations du cours -->
+    <div class="glass-card rounded-xl p-6 mb-6">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+                <h2 class="text-3xl font-bold text-white mb-2">{{ cours.titre }}</h2>
+                <p class="text-gray-400 mb-4">{{ cours.description }}</p>
+            </div>
+            <div class="w-16 h-16 bg-green-600/20 rounded-xl flex items-center justify-center border border-green-500/30 ml-4">
+                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Devoirs</p>
+                <p class="text-3xl font-bold text-white">{{ total_devoirs }}</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Étudiants inscrits</p>
+                <p class="text-3xl font-bold text-white">{{ nb_etudiants_inscrits }}</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Date de création</p>
+                <p class="text-lg font-bold text-white">{{ cours.created_at|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+
+        {% if cours.fichier_pdf %}
+        <div class="bg-gray-800/50 rounded-lg p-4 border-l-4 border-green-500 mb-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-gray-400 text-sm mb-1">Fichier PDF du cours</p>
+                        <p class="text-white font-medium">{{ cours.fichier_pdf.name|slice:"12:" }}</p>
+                    </div>
+                </div>
+                <a href="{{ cours.fichier_pdf.url }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Télécharger le PDF
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Liste des devoirs -->
+    <div class="glass-card rounded-xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <span class="w-1 h-6 bg-green-500 rounded-full mr-3"></span>
+                Devoirs de ce cours ({{ total_devoirs }})
+            </h3>
+            <a href="{% url 'enseignants:ajouter_devoir' %}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Ajouter un devoir
+            </a>
+        </div>
+
+        {% if devoirs_avec_stats %}
+        <div class="space-y-4">
+            {% for item in devoirs_avec_stats %}
+            <div class="bg-gray-800/50 rounded-lg p-5 hover:bg-gray-800/70 transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h4 class="text-lg font-bold text-white">{{ item.devoir.titre }}</h4>
+                            {% if item.est_en_retard %}
+                            <span class="px-2 py-1 bg-red-600/20 text-red-400 border border-red-500/30 rounded text-xs font-medium">
+                                En retard
+                            </span>
+                            {% else %}
+                            <span class="px-2 py-1 bg-green-600/20 text-green-400 border border-green-500/30 rounded text-xs font-medium">
+                                À venir
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ item.devoir.description|truncatewords:20 }}</p>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                {{ item.nb_soumissions }} soumission{{ item.nb_soumissions|pluralize }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Deadline : {{ item.devoir.deadline|date:"d/m/Y H:i" }}
+                            </div>
+                            {% if item.devoir.fichier %}
+                            <div class="flex items-center text-sm text-green-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                                Fichier joint
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="ml-4 flex space-x-2">
+                        <a href="{% url 'enseignants:modifier_devoir' item.devoir.id %}" class="inline-flex items-center px-3 py-2 bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-400 border border-yellow-500/30 font-semibold rounded-lg transition-all duration-300">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Modifier
+                        </a>
+                        <a href="{% url 'enseignants:supprimer_devoir' item.devoir.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce devoir ?');" class="inline-flex items-center px-3 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-semibold rounded-lg transition-all duration-300">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Supprimer
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="text-xl font-bold text-white mb-2">Aucun devoir pour ce cours</h3>
+            <p class="text-gray-400 mb-6">Créez votre premier devoir pour ce cours.</p>
+            <a href="{% url 'enseignants:ajouter_devoir' %}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Ajouter un devoir
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

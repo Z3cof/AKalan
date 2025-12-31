@@ -1,0 +1,64 @@
+{% extends 'admin/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Ajouter une Classe{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-fade-in-up">
+    <div class="glass-card rounded-xl p-8 shadow-xl">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white mb-2 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Ajouter une nouvelle classe
+            </h2>
+            <p class="text-gray-400">Remplissez le formulaire ci-dessous pour créer une nouvelle classe</p>
+        </div>
+
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-xl glass-card border-l-4 {% if message.tags == 'error' %}border-red-500{% elif message.tags == 'success' %}border-green-500{% else %}border-blue-500{% endif %} animate-scale-in">
+                <p class="{% if message.tags == 'error' %}text-red-300{% elif message.tags == 'success' %}text-green-300{% else %}text-blue-300{% endif %} font-medium">{{ message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="nom" class="block text-sm font-bold text-gray-300 mb-2">
+                    Nom de la classe <span class="text-red-400">*</span>
+                </label>
+                <input type="text" id="nom" name="nom" required
+                       class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-white placeholder-gray-500"
+                       placeholder="Ex: L1 Informatique, Terminale S, etc.">
+                <p class="text-xs text-gray-500 mt-2">Le nom doit être unique</p>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-bold text-gray-300 mb-2">
+                    Description
+                </label>
+                <textarea id="description" name="description" rows="4"
+                          class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-white placeholder-gray-500"
+                          placeholder="Description optionnelle de la classe..."></textarea>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                <a href="{% url 'admin_classes' %}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300">
+                    Annuler
+                </a>
+                <button type="submit"
+                        class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    Créer la classe
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

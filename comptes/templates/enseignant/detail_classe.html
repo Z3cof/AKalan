@@ -1,0 +1,133 @@
+{% extends 'enseignant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Détails de la Classe - {{ classe.nom }}{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <!-- En-tête avec bouton retour -->
+    <div class="mb-6">
+        <a href="{% url 'enseignants:mes_classes' %}" class="inline-flex items-center text-green-400 hover:text-green-300 mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Retour aux classes
+        </a>
+    </div>
+
+    <!-- Informations de la classe -->
+    <div class="glass-card rounded-xl p-6 mb-6">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+                <h2 class="text-3xl font-bold text-white mb-2">{{ classe.nom }}</h2>
+                {% if classe.description %}
+                <p class="text-gray-400 mb-4">{{ classe.description }}</p>
+                {% else %}
+                <p class="text-gray-500 italic mb-4">Aucune description</p>
+                {% endif %}
+            </div>
+            <div class="w-16 h-16 bg-green-600/20 rounded-xl flex items-center justify-center border border-green-500/30 ml-4">
+                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Étudiants</p>
+                <p class="text-3xl font-bold text-white">{{ nb_etudiants }}</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Cours</p>
+                <p class="text-3xl font-bold text-white">{{ total_cours }}</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Date de création</p>
+                <p class="text-lg font-bold text-white">{{ classe.created_at|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des étudiants -->
+    <div class="glass-card rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <span class="w-1 h-6 bg-green-500 rounded-full mr-3"></span>
+                Étudiants de cette classe ({{ nb_etudiants }})
+            </h3>
+            <a href="{% url 'enseignants:etudiants_classe' classe.id %}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                Voir les étudiants et notes
+            </a>
+        </div>
+    </div>
+
+    <!-- Liste des cours -->
+    <div class="glass-card rounded-xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <span class="w-1 h-6 bg-green-500 rounded-full mr-3"></span>
+                Cours de cette classe ({{ total_cours }})
+            </h3>
+        </div>
+
+        {% if cours_avec_stats %}
+        <div class="space-y-4">
+            {% for item in cours_avec_stats %}
+            <div class="bg-gray-800/50 rounded-lg p-5 hover:bg-gray-800/70 transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-white mb-2">{{ item.cours.titre }}</h4>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ item.cours.description|truncatewords:20 }}</p>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                {{ item.nb_devoirs }} devoir{{ item.nb_devoirs|pluralize }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                {{ item.nb_etudiants_inscrits }} étudiant{{ item.nb_etudiants_inscrits|pluralize }} inscrit{{ item.nb_etudiants_inscrits|pluralize }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Créé le {{ item.cours.created_at|date:"d/m/Y" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <a href="{% url 'enseignants:detail_cours' item.cours.id %}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            Voir les devoirs
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <h3 class="text-xl font-bold text-white mb-2">Aucun cours pour cette classe</h3>
+            <p class="text-gray-400 mb-6">Aucun étudiant de cette classe n'est inscrit à vos cours pour le moment.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

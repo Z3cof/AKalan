@@ -1,0 +1,88 @@
+{% extends 'enseignant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Mes Classes{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <!-- En-tête avec statistique -->
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-bold text-white mb-2">Mes Classes</h2>
+            <p class="text-gray-400">Classes dans lesquelles vous êtes assigné</p>
+        </div>
+        <div class="glass-card rounded-xl p-4 border-l-4 border-green-500">
+            <p class="text-gray-400 text-sm mb-1">Total de classes</p>
+            <p class="text-3xl font-bold text-white">{{ total_classes }}</p>
+        </div>
+    </div>
+
+    <!-- Liste des classes -->
+    {% if classes_avec_stats %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in classes_avec_stats %}
+        <div class="glass-card rounded-xl p-6 hover-lift animate-fade-in-up" style="animation-delay: {{ forloop.counter0|add:0.1 }}s">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-white mb-2">{{ item.classe.nom }}</h3>
+                    {% if item.classe.description %}
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ item.classe.description }}</p>
+                    {% else %}
+                    <p class="text-gray-500 text-sm mb-4 italic">Aucune description</p>
+                    {% endif %}
+                </div>
+                <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center border border-green-500/30 ml-4">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Statistiques de la classe -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <p class="text-gray-400 text-xs mb-1">Étudiants</p>
+                    <p class="text-2xl font-bold text-white">{{ item.nb_etudiants }}</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <p class="text-gray-400 text-xs mb-1">Cours</p>
+                    <p class="text-2xl font-bold text-white">{{ item.nb_cours }}</p>
+                </div>
+            </div>
+
+            <!-- Bouton pour voir les détails -->
+            <div class="pt-4 border-t border-gray-700">
+                <a href="{% url 'enseignants:detail_classe' item.classe.id %}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    Voir les cours
+                </a>
+            </div>
+
+            <!-- Date de création -->
+            <div class="pt-4 border-t border-gray-700">
+                <p class="text-gray-500 text-xs">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Créée le {{ item.classe.created_at|date:"d/m/Y" }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-card rounded-xl p-12 text-center animate-fade-in-up">
+        <svg class="w-20 h-20 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        <h3 class="text-xl font-bold text-white mb-2">Aucune classe assignée</h3>
+        <p class="text-gray-400 mb-6">Vous n'êtes actuellement assigné à aucune classe.</p>
+        <p class="text-gray-500 text-sm">Contactez un administrateur pour être assigné à une classe.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

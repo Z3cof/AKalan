@@ -1,0 +1,93 @@
+{% extends 'enseignant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Ajouter une Note{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-fade-in-up">
+    <div class="mb-6">
+        <a href="{% url 'enseignants:etudiants_classe' classe.id %}" class="inline-flex items-center text-green-400 hover:text-green-300 mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Retour aux étudiants
+        </a>
+    </div>
+
+    <div class="glass-card rounded-xl p-8 shadow-xl">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white mb-2">Ajouter une note</h2>
+            <p class="text-gray-400">Classe : {{ classe.nom }}</p>
+            {% if etudiant %}
+            <p class="text-gray-400">Étudiant : {{ etudiant.get_full_name|default:etudiant.username }}</p>
+            {% endif %}
+        </div>
+
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-xl glass-card border-l-4 {% if message.tags == 'error' %}border-red-500{% elif message.tags == 'success' %}border-green-500{% else %}border-blue-500{% endif %} animate-scale-in">
+                <p class="{% if message.tags == 'error' %}text-red-300{% elif message.tags == 'success' %}text-green-300{% else %}text-blue-300{% endif %} font-medium">{{ message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.etudiant.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Étudiant <span class="text-red-400">*</span>
+                </label>
+                {{ form.etudiant }}
+                {% if form.etudiant.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.etudiant.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.devoir.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Devoir <span class="text-red-400">*</span>
+                </label>
+                {{ form.devoir }}
+                {% if form.devoir.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.devoir.errors.0 }}</p>
+                {% endif %}
+                <p class="text-gray-500 text-xs mt-1">Sélectionnez le devoir pour lequel vous attribuez cette note</p>
+            </div>
+
+            <div>
+                <label for="{{ form.note.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Note <span class="text-red-400">*</span>
+                </label>
+                {{ form.note }}
+                {% if form.note.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.note.errors.0 }}</p>
+                {% endif %}
+                <p class="text-gray-500 text-xs mt-1">Note sur 20 (ex: 15.5)</p>
+            </div>
+
+            <div>
+                <label for="{{ form.commentaire.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Commentaire (optionnel)
+                </label>
+                {{ form.commentaire }}
+                {% if form.commentaire.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.commentaire.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                <a href="{% url 'enseignants:etudiants_classe' classe.id %}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300">
+                    Annuler
+                </a>
+                <button type="submit" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                    Enregistrer la note
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

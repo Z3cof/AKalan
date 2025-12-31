@@ -1,0 +1,209 @@
+{% extends 'etudiant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Dashboard Étudiant{% endblock %}
+
+{% block content %}
+<!-- Statistiques KPIs -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-6">
+    <a href="{% url 'etudiants:mes_cours' %}" class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-blue-500 hover-lift animate-fade-in-up cursor-pointer transition-all duration-300 hover:shadow-xl active:scale-95" style="animation-delay: 0.1s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">Mes Cours</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{{ total_cours }}</p>
+                <p class="text-xs text-gray-500 mt-1">Cours suivis</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'etudiants:mes_devoirs' %}" class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-purple-500 hover-lift animate-fade-in-up cursor-pointer transition-all duration-300 hover:shadow-xl active:scale-95" style="animation-delay: 0.2s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-purple-600/20 rounded-xl flex items-center justify-center border border-purple-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">Mes Devoirs</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{{ total_devoirs }}</p>
+                <p class="text-xs text-gray-500 mt-1">Devoirs à faire</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'etudiants:mes_soumissions' %}" class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-green-500 hover-lift animate-fade-in-up cursor-pointer transition-all duration-300 hover:shadow-xl active:scale-95" style="animation-delay: 0.3s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-green-600/20 rounded-xl flex items-center justify-center border border-green-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">Soumissions</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{{ total_soumissions }}</p>
+                <p class="text-xs text-gray-500 mt-1">Devoirs soumis</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'etudiants:mes_notes' %}" class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-yellow-500 hover-lift animate-fade-in-up cursor-pointer transition-all duration-300 hover:shadow-xl active:scale-95" style="animation-delay: 0.4s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-yellow-600/20 rounded-xl flex items-center justify-center border border-yellow-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">Moyenne</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{% if moyenne_generale %}{{ moyenne_generale }}{% else %}--{% endif %}</p>
+                <p class="text-xs text-gray-500 mt-1">Moyenne générale</p>
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- Deuxième ligne de statistiques -->
+<div class="grid grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6">
+    <div class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-red-500 hover-lift animate-fade-in-up" style="animation-delay: 0.5s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-red-600/20 rounded-xl flex items-center justify-center border border-red-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">En retard</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{{ devoirs_en_retard }}</p>
+                <p class="text-xs text-gray-500 mt-1">Deadline dépassée</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-cyan-500 hover-lift animate-fade-in-up" style="animation-delay: 0.6s">
+        <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-cyan-600/20 rounded-xl flex items-center justify-center border border-cyan-500/30 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-8 md:h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-400 text-xs font-medium mb-1">Non soumis</p>
+                <p class="text-2xl md:text-4xl font-bold text-white leading-tight">{{ devoirs_non_soumis }}</p>
+                <p class="text-xs text-gray-500 mt-1">À soumettre</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cours récents -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+    <div class="glass-card rounded-2xl p-4 md:p-6 animate-fade-in-up">
+        <div class="flex items-center justify-between mb-3 md:mb-4">
+            <h3 class="text-lg md:text-xl font-bold text-white flex items-center">
+                <span class="w-1 h-5 md:h-6 bg-blue-500 rounded-full mr-2 md:mr-3"></span>
+                <span class="hidden sm:inline">Mes Cours Récents</span>
+                <span class="sm:hidden">Cours</span>
+            </h3>
+            <a href="{% url 'etudiants:mes_cours' %}" class="text-blue-400 hover:text-blue-300 text-xs md:text-sm font-medium">Voir tout</a>
+        </div>
+        {% if cours_inscrits %}
+        <div class="space-y-2 md:space-y-3">
+            {% for cours in cours_inscrits %}
+            <div class="bg-gray-800/50 rounded-xl p-3 md:p-4 hover:bg-gray-800/70 transition-all duration-200 active:scale-98">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-white font-semibold mb-1 text-sm md:text-base break-words">{{ cours.titre }}</h4>
+                        <p class="text-gray-400 text-xs md:text-sm line-clamp-2 mb-2">{{ cours.description|truncatewords:15 }}</p>
+                        <p class="text-gray-500 text-xs">Par {{ cours.enseignant.get_full_name|default:cours.enseignant.username }}</p>
+                    </div>
+                    <a href="{% url 'etudiants:detail_cours' cours.id %}" class="sm:ml-4 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-medium transition-all duration-300 self-start sm:self-auto">
+                        Voir
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-8">Aucun cours pour le moment</p>
+        {% endif %}
+    </div>
+
+    <!-- Devoirs récents -->
+    <div class="glass-card rounded-2xl p-4 md:p-6 animate-fade-in-up">
+        <div class="flex items-center justify-between mb-3 md:mb-4">
+            <h3 class="text-lg md:text-xl font-bold text-white flex items-center">
+                <span class="w-1 h-5 md:h-6 bg-purple-500 rounded-full mr-2 md:mr-3"></span>
+                <span class="hidden sm:inline">Devoirs Récents</span>
+                <span class="sm:hidden">Devoirs</span>
+            </h3>
+            <a href="{% url 'etudiants:mes_devoirs' %}" class="text-purple-400 hover:text-purple-300 text-xs md:text-sm font-medium">Voir tout</a>
+        </div>
+        {% if devoirs_recents %}
+        <div class="space-y-2 md:space-y-3">
+            {% for devoir in devoirs_recents %}
+            <div class="bg-gray-800/50 rounded-xl p-3 md:p-4 hover:bg-gray-800/70 transition-all duration-200 active:scale-98">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-white font-semibold mb-1 text-sm md:text-base break-words">{{ devoir.titre }}</h4>
+                        <p class="text-gray-400 text-xs md:text-sm mb-2">{{ devoir.cours.titre }}</p>
+                        <p class="text-gray-500 text-xs">Deadline: {{ devoir.deadline|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    <a href="{% url 'etudiants:mes_devoirs' %}" class="sm:ml-4 px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 border border-purple-500/30 rounded-lg text-xs font-medium transition-all duration-300 self-start sm:self-auto">
+                        Voir
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-8">Aucun devoir pour le moment</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Notes récentes -->
+{% if notes_recentes %}
+<div class="glass-card rounded-xl p-6 mt-6 animate-fade-in-up">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold text-white flex items-center">
+            <span class="w-1 h-6 bg-yellow-500 rounded-full mr-3"></span>
+            Notes Récentes
+        </h3>
+        <a href="{% url 'etudiants:mes_notes' %}" class="text-yellow-400 hover:text-yellow-300 text-sm font-medium">Voir tout</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for note in notes_recentes %}
+        <div class="bg-gray-800/50 rounded-lg p-4 border-l-4 {% if note.note >= 16 %}border-green-500{% elif note.note >= 12 %}border-yellow-500{% else %}border-red-500{% endif %}">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-2xl font-bold text-white">{{ note.note }}/20</span>
+                {% if note.cours %}
+                <span class="text-xs text-gray-400">{{ note.cours.titre|truncatewords:3 }}</span>
+                {% else %}
+                <span class="text-xs text-gray-400">Général</span>
+                {% endif %}
+            </div>
+            <p class="text-xs text-gray-500">{{ note.date_attribution|date:"d/m/Y" }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

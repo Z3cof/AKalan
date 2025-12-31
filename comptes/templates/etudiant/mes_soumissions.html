@@ -1,0 +1,60 @@
+{% extends 'etudiant/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Mes Soumissions{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="mb-6">
+        <h2 class="text-3xl font-bold text-white mb-2">Mes Soumissions</h2>
+        <p class="text-gray-400">Historique de vos soumissions</p>
+    </div>
+
+    {% if soumissions_avec_statut %}
+    <div class="space-y-4">
+        {% for item in soumissions_avec_statut %}
+        <div class="glass-card rounded-xl p-6 hover-lift animate-fade-in-up">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <h3 class="text-xl font-bold text-white">{{ item.soumission.devoir.titre }}</h3>
+                        {% if item.est_en_retard %}
+                        <span class="px-2 py-1 bg-red-600/20 text-red-400 border border-red-500/30 rounded text-xs font-medium">
+                            En retard
+                        </span>
+                        {% else %}
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 border border-green-500/30 rounded text-xs font-medium">
+                            À temps
+                        </span>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-400 mb-3">{{ item.soumission.devoir.cours.titre }}</p>
+                    <div class="flex items-center space-x-4 text-sm text-gray-400">
+                        <span>📅 Soumis le {{ item.soumission.date_soumission|date:"d/m/Y à H:i" }}</span>
+                        <span>⏰ Deadline: {{ item.soumission.devoir.deadline|date:"d/m/Y à H:i" }}</span>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <a href="{{ item.soumission.fichier.url }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Télécharger
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-card rounded-xl p-12 text-center">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+        <h3 class="text-xl font-bold text-white mb-2">Aucune soumission</h3>
+        <p class="text-gray-400">Vous n'avez pas encore soumis de devoir.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

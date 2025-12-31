@@ -1,0 +1,42 @@
+from django.urls import path
+from .views import (
+    enseignant_login,
+    dashboard_enseignant,
+    ajouter_cours,
+    ajouter_devoir,
+    supprimer_cours,
+    supprimer_devoir,
+    modifier_cours,
+    modifier_devoir,
+    mes_classes,
+    detail_classe,
+    detail_cours,
+    etudiants_classe,
+    ajouter_note,
+    modifier_note,
+    supprimer_note,
+    mes_cours,
+    mes_devoirs,
+)
+
+urlpatterns = [
+    path('login/', enseignant_login, name='enseignant_login'),
+    path('', dashboard_enseignant, name='dashboard_enseignant'),
+    path('mes-classes/', mes_classes, name='mes_classes'),
+    path('classe/<int:classe_id>/', detail_classe, name='detail_classe'),
+    path('classe/<int:classe_id>/etudiants/', etudiants_classe, name='etudiants_classe'),
+    path('classe/<int:classe_id>/ajouter-note/', ajouter_note, name='ajouter_note'),
+    path('classe/<int:classe_id>/ajouter-note/<int:etudiant_id>/', ajouter_note, name='ajouter_note_etudiant'),
+    path('modifier-note/<int:note_id>/', modifier_note, name='modifier_note'),
+    path('supprimer-note/<int:note_id>/', supprimer_note, name='supprimer_note'),
+    path('cours/', mes_cours, name='mes_cours'),
+    path('cours/<int:cours_id>/', detail_cours, name='detail_cours'),
+    path('cours/ajouter/', ajouter_cours, name='ajouter_cours'),
+    path('cours/<int:cours_id>/modifier/', modifier_cours, name='modifier_cours'),
+    path('cours/<int:cours_id>/supprimer/', supprimer_cours, name='supprimer_cours'),
+    path('devoirs/', mes_devoirs, name='mes_devoirs'),
+    path('devoirs/ajouter/', ajouter_devoir, name='ajouter_devoir'),
+    path('devoirs/<int:devoir_id>/modifier/', modifier_devoir, name='modifier_devoir'),
+    path('devoirs/<int:devoir_id>/supprimer/', supprimer_devoir, name='supprimer_devoir'),
+]
+

@@ -1,0 +1,88 @@
+{% extends 'enseignants/base.html' %}
+{% load static tailwind_tags %}
+
+{% block page_title %}Ajouter un Devoir{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-fade-in-up">
+    <div class="mb-6">
+        <a href="{% url 'dashboard_enseignant' %}" class="inline-flex items-center text-green-400 hover:text-green-300 mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Retour au dashboard
+        </a>
+    </div>
+
+    <div class="glass-card rounded-xl p-8 shadow-xl">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white mb-2">Ajouter un devoir</h2>
+            <p class="text-gray-400">Créez un nouveau devoir pour vos étudiants</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.cours.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Cours <span class="text-red-400">*</span>
+                </label>
+                {{ form.cours }}
+                {% if form.cours.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.cours.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.titre.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Titre <span class="text-red-400">*</span>
+                </label>
+                {{ form.titre }}
+                {% if form.titre.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.titre.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.description.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Description
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.deadline.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Deadline <span class="text-red-400">*</span>
+                </label>
+                {{ form.deadline }}
+                {% if form.deadline.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.deadline.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.fichier.id_for_label }}" class="block text-sm font-bold text-gray-300 mb-2">
+                    Fichier (optionnel)
+                </label>
+                {{ form.fichier }}
+                {% if form.fichier.errors %}
+                <p class="text-red-400 text-xs mt-1">{{ form.fichier.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                <a href="{% url 'dashboard_enseignant' %}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300">
+                    Annuler
+                </a>
+                <button type="submit" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                    Créer le devoir
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
