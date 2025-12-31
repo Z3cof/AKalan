@@ -33,9 +33,5 @@ urlpatterns = [
     path('admin/utilisateur/<int:utilisateur_id>/', views.admin_detail_utilisateur, name='admin_detail_utilisateur'),
     path('admin/utilisateur/<int:utilisateur_id>/modifier/', views.admin_modifier_utilisateur, name='admin_modifier_utilisateur'),
     path('admin/utilisateur/<int:utilisateur_id>/supprimer/', views.admin_supprimer_utilisateur, name='admin_supprimer_utilisateur'),
-    path('admin/deconnexion-automatique/', views.deconnexion_automatique, name='deconnexion_automatique'),
-    path('enseignant/deconnexion-automatique/', views.deconnexion_automatique, name='deconnexion_automatique'),
-    path('etudiant/deconnexion-automatique/', views.deconnexion_automatique, name='deconnexion_automatique'),
-    path('enseignant/deconnexion-automatique/', views.deconnexion_automatique, name='deconnexion_automatique'),
 ]
 

@@ -23,10 +23,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8&tg9svnx0!34y$1inl)(4ob=r3=ie(+7eb&w6z)rck84jrl3+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-ALLOWED_HOSTS = ['AKalan.onrender.com', 'localhost']
+# Configuration CSRF
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_COOKIE_SECURE = False  # Mettre à True en production avec HTTPS
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+
+# Configuration des sessions
+SESSION_COOKIE_AGE = 1800  # 30 minutes d'inactivité (en secondes) - minimum 15 minutes comme demandé
+SESSION_SAVE_EVERY_REQUEST = True  # Prolonge la session à chaque requête (même si l'utilisateur revient après avoir quitté)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La session ne se ferme pas à la fermeture du navigateur
+SESSION_COOKIE_SECURE = False  # Mettre à True en production avec HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+# Empêcher la perte de session lors de la navigation
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Utiliser la base de données pour stocker les sessions (persistant)
+# Configuration supplémentaire pour maintenir la session active même après avoir quitté la page
+SESSION_COOKIE_NAME = 'sessionid'  # Nom du cookie de session
 
 
 # Application definition

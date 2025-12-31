@@ -824,17 +824,3 @@ def admin_supprimer_devoir(request, devoir_id):
         return redirect('admin_devoirs')
     
     return render(request, 'admin/supprimer_devoir.html', {'devoir': devoir})
-
-#gerer la decoonexion automatique apres inactivité de 15 minutes
-@login_required
-def deconnexion_automatique(request):
-    """Déconnexion automatique après inactivité de 15 minutes"""
-    if request.user.is_authenticated:
-        request.session.modified = True
-        request.session.set_expiry(900)
-    return redirect('admin_login')
-    return redirect('enseignants:enseignant_login')
-    return redirect('etudiants:etudiant_login')
-    return redirect('enseignant:enseignant_login')
-
-    

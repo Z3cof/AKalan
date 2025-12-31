@@ -5,311 +5,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Étudiant - AKalan{% endblock %}</title>
-
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
-
     <style>
-        /* ===== ANIMATIONS ===== */
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .sidebar-item {
-            transition: all 0.25s ease;
-        }
-
-        .sidebar-item:hover {
-            transform: translateX(6px);
-        }
-
-        /* Transition douce pour les icônes */
-        .sidebar-item svg {
-            transition: transform 0.25s ease, filter 0.25s ease;
-        }
-
-        /* ===== ICON ACTIVE ANIMATION ===== */
-        @keyframes iconPulse {
-            0% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 0 rgba(59,130,246,0));
-            }
-            50% {
-                transform: scale(1.08);
-                filter: drop-shadow(0 0 6px rgba(59,130,246,0.6));
-            }
-            100% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 0 rgba(59,130,246,0));
-            }
-        }
-
-        .sidebar-item.active svg {
-            animation: iconPulse 1.4s ease-in-out infinite;
-        }
-
-        /* ===== MOBILE SIDEBAR CLEAN ===== */
-        @media (max-width: 768px) {
-
-            #sidebar {
-                position: fixed;
-                inset: 0 auto 0 0;
-                width: 16rem;
-                background: #1f2937;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 50;
-                touch-action: pan-y;
-            }
-
-            body.sidebar-open #sidebar {
-                transform: translateX(0);
-                box-shadow: 12px 0 25px rgba(0,0,0,0.45);
-            }
-
-            #mobile-menu-overlay {
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.45);
+        /* Animations subtiles et élégantes */
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.3s ease;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .animate-slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        .animate-scale-in {
+            animation: scaleIn 0.4s ease-out;
+        }
+        
+        /* Glassmorphism élégant */
+        .glass-button {
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glass-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .glass-card {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Hover effects subtils */
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+        }
+        
+        /* Sidebar */
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+        .sidebar-item:hover {
+            transform: translateX(4px);
+        }
+        
+        /* Mobile menu styles */
+        #mobile-menu-overlay {
+            display: none;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        @media (max-width: 768px) {
+            #sidebar {
+                z-index: 50;
+            }
+            #sidebar.show {
+                transform: translateX(0);
+            }
+            #mobile-menu-overlay {
                 z-index: 40;
             }
-
-            body.sidebar-open #mobile-menu-overlay {
+            #mobile-menu-overlay.show {
+                display: block;
                 opacity: 1;
                 pointer-events: auto;
             }
-
-            body.sidebar-open {
-                overflow: hidden;
-            }
-
-            body.sidebar-open .sidebar-item {
-                animation: slideInLeft 0.35s ease both;
+            #mobile-menu-overlay:not(.show) {
+                display: none;
+                opacity: 0;
+                pointer-events: none;
             }
         }
-
-        /* ===== DESKTOP ===== */
+        
         @media (min-width: 769px) {
-            #sidebar {
-                position: static;
-                transform: none !important;
-            }
-
             #mobile-menu-overlay {
                 display: none !important;
+                pointer-events: none;
             }
         }
     </style>
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            
+            function openMenu() {
+                if (window.innerWidth <= 768) { // Seulement sur mobile
+                    // Afficher l'overlay d'abord
+                    overlay.style.display = 'block';
+                    // Forcer le reflow pour que la transition fonctionne
+                    void overlay.offsetHeight;
+                    // Ajouter la classe show et définir l'opacité
+                    overlay.classList.add('show');
+                    overlay.style.opacity = '1';
+                    // Ouvrir le sidebar
+                    sidebar.classList.add('show');
+                    document.body.style.overflow = 'hidden'; // Empêcher le scroll du body
+                }
+            }
+            
+            function closeMenu() {
+                // Fermer le sidebar
+                sidebar.classList.remove('show');
+                // Réduire l'opacité de l'overlay
+                overlay.style.opacity = '0';
+                overlay.classList.remove('show');
+                // Attendre la fin de la transition avant de cacher complètement
+                setTimeout(() => {
+                    if (!overlay.classList.contains('show')) {
+                        overlay.style.display = 'none';
+                    }
+                }, 300);
+                document.body.style.overflow = ''; // Réactiver le scroll
+            }
+            
+            // Fermer le menu si on redimensionne vers desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeMenu();
+                }
+            });
+            
+            if (menuButton && sidebar && overlay) {
+                // S'assurer que l'overlay est caché au chargement
+                overlay.style.display = 'none';
+                overlay.style.opacity = '0';
+                overlay.classList.remove('show');
+                
+                menuButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (sidebar.classList.contains('show')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                });
+                
+                overlay.addEventListener('click', function() {
+                    closeMenu();
+                });
+                
+                // Fermer le menu si on clique sur un lien
+                const sidebarLinks = sidebar.querySelectorAll('a');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        closeMenu();
+                    });
+                });
+            }
+        });
+    </script>
 </head>
-
 <body class="bg-gray-900">
-
-{% if user.is_authenticated and user.role == 'etudiant' %}
-
-<div class="flex h-screen overflow-hidden">
-
-    <!-- OVERLAY -->
-    <div id="mobile-menu-overlay"></div>
-
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="text-white flex flex-col border-r border-gray-700">
-
-        <!-- Logo -->
-        <div class="p-6 border-b border-gray-700">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xl">A</div>
-                <div>
-                    <h1 class="text-xl font-bold">AKalan</h1>
-                    <p class="text-xs text-gray-400">Plateforme E-Learning</p>
+    {% if user.is_authenticated and user.role == 'etudiant' %}
+    <div class="flex h-screen overflow-hidden">
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="fixed inset-0 z-30 transition-opacity duration-300" style="display: none; background-color: rgba(0, 0, 0, 0.4);"></div>
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed md:static w-64 bg-gray-800 border-r border-gray-700 text-white flex flex-col shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 h-full">
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+                        <span class="text-white font-bold text-xl">A</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">AKalan</h1>
+                        <p class="text-gray-400 text-xs mt-0.5">Plateforme E-Learning</p>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="flex-1 p-4 space-y-2">
-            <a href="{% url 'etudiants:dashboard_etudiant' %}"
-               class="sidebar-item flex items-center px-4 py-3 rounded-lg
-               {% if request.resolver_match.url_name == 'dashboard_etudiant' %}
-                   active bg-blue-600 text-white
-               {% else %}
-                   text-gray-300 hover:bg-gray-700 hover:text-white
-               {% endif %}">
-
-                <svg class="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9.75L12 3l9 6.75"></path>
-                    <path d="M9 22V12h6v10"></path>
-                </svg>
-
-                Dashboard
-            </a>
-
-            <a href="{% url 'etudiants:mes_cours' %}"
-               class="sidebar-item flex items-center px-4 py-3 rounded-lg
-               {% if request.resolver_match.url_name == 'mes_cours' %}
-                   active bg-blue-600 text-white
-               {% else %}
-                   text-gray-300 hover:bg-gray-700 hover:text-white
-               {% endif %}">
-
-                <svg class="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 19.5V6a2 2 0 012-2h11a3 3 0 013 3v12.5"></path>
-                    <path d="M8 22h8"></path>
-                </svg>
-
-                Mes Cours
-            </a>
-
-            <a href="{% url 'etudiants:mes_devoirs' %}"
-               class="sidebar-item flex items-center px-4 py-3 rounded-lg
-               {% if request.resolver_match.url_name == 'mes_devoirs' %}
-                   active bg-blue-600 text-white
-               {% else %}
-                   text-gray-300 hover:bg-gray-700 hover:text-white
-               {% endif %}">
-
-                <svg class="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 3h6l4 4v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
-                    <path d="M9 12h6"></path>
-                    <path d="M9 16h6"></path>
-                </svg>
-
-                Mes Devoirs
-            </a>
-
-            <a href="{% url 'etudiants:mes_notes' %}"
-               class="sidebar-item flex items-center px-4 py-3 rounded-lg
-               {% if request.resolver_match.url_name == 'mes_notes' %}
-                   active bg-blue-600 text-white
-               {% else %}
-                   text-gray-300 hover:bg-gray-700 hover:text-white
-               {% endif %}">
-
-                <svg class="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 11l3 3 6-6"></path>
-                    <path d="M20.3 11.3a8.9 8.9 0 11-6.6-6.6"></path>
-                </svg>
-
-                Mes Notes
-            </a>
-
-            <a href="{% url 'etudiants:mes_soumissions' %}"
-               class="sidebar-item flex items-center px-4 py-3 rounded-lg
-               {% if request.resolver_match.url_name == 'mes_soumissions' %}
-                   active bg-blue-600 text-white
-               {% else %}
-                   text-gray-300 hover:bg-gray-700 hover:text-white
-               {% endif %}">
-
-                <svg class="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 18a4 4 0 01-.9-7.9A5 5 0 1116 7"></path>
-                    <path d="M12 12v7"></path>
-                    <path d="M9 15l3-3 3 3"></path>
-                </svg>
-
-                Mes Soumissions
-            </a>
-        </nav>
-
-        <!-- Logout -->
-        <div class="p-4 border-t border-gray-700">
-            <a href="{% url 'admin_logout' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
-                Déconnexion
-            </a>
-        </div>
-    </aside>
-
-    <!-- MAIN -->
-    <div class="flex-1 flex flex-col">
-
-        <!-- TOPBAR -->
-        <header class="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between">
-
-            <!-- Hamburger -->
-            <button id="mobile-menu-button" class="md:hidden text-white p-2 rounded hover:bg-gray-700">
-                ☰
-            </button>
-
-            <h2 class="text-white font-bold text-lg">{% block page_title %}Dashboard{% endblock %}</h2>
-
-            <div class="text-sm text-gray-300">
-                {{ user.get_full_name|default:user.username }}
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="{% url 'etudiants:dashboard_etudiant' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'dashboard_etudiant' %}bg-blue-600 text-white shadow-lg{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="{% url 'etudiants:mes_cours' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'mes_cours' or request.resolver_match.url_name == 'detail_cours' %}bg-blue-600 text-white shadow-lg{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    Mes Cours
+                </a>
+                <a href="{% url 'etudiants:mes_devoirs' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'mes_devoirs' or request.resolver_match.url_name == 'soumettre_devoir' %}bg-blue-600 text-white shadow-lg{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Mes Devoirs
+                </a>
+                <a href="{% url 'etudiants:mes_notes' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'mes_notes' %}bg-blue-600 text-white shadow-lg{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                    Mes Notes
+                </a>
+                <a href="{% url 'etudiants:mes_soumissions' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-300 {% if request.resolver_match.url_name == 'mes_soumissions' %}bg-blue-600 text-white shadow-lg{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    Mes Soumissions
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <a href="{% url 'admin_logout' %}" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 transition-all duration-300">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Déconnexion
+                </a>
             </div>
-        </header>
+        </aside>
 
-        <!-- CONTENT -->
-        <main class="flex-1 overflow-y-auto p-4">
-            {% block content %}{% endblock %}
-        </main>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden bg-gray-900 w-full md:w-auto relative z-10">
+            <!-- Top Bar -->
+            <header class="bg-gray-800 border-b border-gray-700 shadow-lg animate-fade-in-up">
+                <div class="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
+                    <div class="flex items-center space-x-3 md:space-x-0">
+                        <!-- Mobile Menu Button -->
+                        <button id="mobile-menu-button" class="md:hidden text-white p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        <div>
+                            <h2 class="text-lg md:text-2xl font-bold text-white">{% block page_title %}Dashboard{% endblock %}</h2>
+                            <p class="text-xs md:text-sm text-gray-400 mt-1 hidden md:flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                {{ "now"|date:"d/m/Y" }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        <div class="flex items-center space-x-2 md:space-x-3 animate-scale-in">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg ring-2 ring-blue-500/20">
+                                <span class="text-white font-bold text-base md:text-lg">{{ user.get_full_name|default:user.username|first|upper }}</span>
+                            </div>
+                            <div class="text-left hidden sm:block">
+                                <p class="text-xs md:text-sm font-bold text-white">Hey, {{ user.get_full_name|default:user.username }}</p>
+                                <p class="text-xs text-gray-400">Étudiant{% if user.classe %} - {{ user.classe.nom }}{% endif %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="px-4 md:px-6 pt-4 animate-fade-in-up">
+                {% for message in messages %}
+                <div class="mb-4 p-3 md:p-4 rounded-lg glass-card border-l-4 {% if message.tags == 'error' %}border-red-500{% elif message.tags == 'success' %}border-blue-500{% else %}border-blue-500{% endif %} animate-scale-in">
+                    <p class="{% if message.tags == 'error' %}text-red-300{% elif message.tags == 'success' %}text-blue-300{% else %}text-blue-300{% endif %} font-medium text-sm md:text-base">{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-6">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
     </div>
-</div>
-
-{% else %}
-<div class="min-h-screen flex items-center justify-center text-white">
-    Accès non autorisé
-</div>
-{% endif %}
-
-<!-- ===== JS MOBILE SIDEBAR ===== -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const body = document.body;
-    const btn = document.getElementById('mobile-menu-button');
-    const overlay = document.getElementById('mobile-menu-overlay');
-    const sidebar = document.getElementById('sidebar');
-
-    let startX = 0;
-    let isSwiping = false;
-
-    const open = () => body.classList.add('sidebar-open');
-    const close = () => body.classList.remove('sidebar-open');
-
-    btn?.addEventListener('click', () => {
-        body.classList.toggle('sidebar-open');
-    });
-
-    overlay?.addEventListener('click', close);
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') close();
-    });
-
-    // Swipe open from left edge
-    document.addEventListener('touchstart', e => {
-        if (window.innerWidth > 768) return;
-        if (e.touches[0].clientX < 20) {
-            startX = e.touches[0].clientX;
-            isSwiping = true;
-        }
-    });
-
-    document.addEventListener('touchmove', e => {
-        if (!isSwiping) return;
-        if (e.touches[0].clientX - startX > 60) open();
-    });
-
-    document.addEventListener('touchend', () => {
-        isSwiping = false;
-    });
-
-    // Swipe close
-    sidebar?.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-    });
-
-    sidebar?.addEventListener('touchmove', e => {
-        if (startX - e.touches[0].clientX > 60) close();
-    });
-});
-</script>
-
+    {% else %}
+    <div class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+        {% block login_content %}
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-white mb-4">Accès non autorisé</h1>
+            <p class="text-gray-400">Vous devez être connecté en tant qu'étudiant pour accéder à cette page.</p>
+            <a href="{% url 'etudiants:etudiant_login' %}" class="mt-4 inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300">
+                Se connecter
+            </a>
+        </div>
+        {% endblock %}
+    </div>
+    {% endif %}
 </body>
 </html>
+
